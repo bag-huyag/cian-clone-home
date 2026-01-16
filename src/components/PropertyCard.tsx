@@ -1,19 +1,7 @@
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface Property {
-  id: number;
-  image: string;
-  price: number;
-  rooms: string;
-  area: number;
-  floor: number;
-  totalFloors: number;
-  district: string;
-  metro: string;
-  metroColor: string;
-  metroTime: number;
-}
+import { Link } from "react-router-dom";
+import { Property } from "@/data/properties";
 
 interface PropertyCardProps {
   property: Property;
@@ -40,29 +28,40 @@ const PropertyCard = ({ property, isFavorite, onToggleFavorite }: PropertyCardPr
   return (
     <article className="bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-200 group">
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+      <Link to={`/property/${property.id}`} className="block relative aspect-[4/3] bg-muted overflow-hidden">
         <img
-          src={property.image}
+          src={property.images[0]}
           alt={`${property.rooms} в ${property.district}`}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         
-        {/* Favorite Button */}
-        <button
-          onClick={() => onToggleFavorite(property.id)}
-          className={cn(
-            "absolute top-3 right-3 p-2 rounded-full transition-all duration-200",
-            isFavorite
-              ? "bg-cian-red text-white"
-              : "bg-white/90 text-muted-foreground hover:bg-white hover:text-cian-red"
-          )}
-        >
-          <Heart className={cn("w-5 h-5", isFavorite && "fill-current")} />
-        </button>
-      </div>
+        {/* Image count badge */}
+        {property.images.length > 1 && (
+          <span className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded">
+            {property.images.length} фото
+          </span>
+        )}
+      </Link>
+      
+      {/* Favorite Button */}
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          onToggleFavorite(property.id);
+        }}
+        className={cn(
+          "absolute top-3 right-3 p-2 rounded-full transition-all duration-200 z-10",
+          isFavorite
+            ? "bg-cian-red text-white"
+            : "bg-white/90 text-muted-foreground hover:bg-white hover:text-cian-red"
+        )}
+        style={{ position: 'absolute', top: '12px', right: '12px' }}
+      >
+        <Heart className={cn("w-5 h-5", isFavorite && "fill-current")} />
+      </button>
 
       {/* Content */}
-      <div className="p-4">
+      <Link to={`/property/${property.id}`} className="block p-4">
         {/* Price */}
         <div className="text-xl font-bold text-foreground mb-2">
           {formatPrice(property.price)}
@@ -84,7 +83,7 @@ const PropertyCard = ({ property, isFavorite, onToggleFavorite }: PropertyCardPr
           <span className="text-muted-foreground">{property.metro}</span>
           <span className="text-muted-foreground">• {property.metroTime} мин</span>
         </div>
-      </div>
+      </Link>
     </article>
   );
 };
