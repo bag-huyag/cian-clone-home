@@ -1,21 +1,5 @@
 import PropertyCard from "./PropertyCard";
-
-interface Property {
-  id: number;
-  image: string;
-  price: number;
-  rooms: string;
-  area: number;
-  floor: number;
-  totalFloors: number;
-  district: string;
-  metro: string;
-  metroColor: string;
-  metroTime: number;
-  type: string;
-  roomCount: string;
-  houseType: string;
-}
+import { Property } from "@/data/properties";
 
 interface PropertyGridProps {
   properties: Property[];

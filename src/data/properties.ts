@@ -1,6 +1,6 @@
 export interface Property {
   id: number;
-  image: string;
+  images: string[];
   price: number;
   rooms: string;
   area: number;
@@ -13,12 +13,26 @@ export interface Property {
   type: string;
   roomCount: string;
   houseType: string;
+  address: string;
+  description: string;
+  seller: {
+    name: string;
+    phone: string;
+    type: "owner" | "agent";
+  };
+  features: string[];
+  yearBuilt: number;
 }
 
 export const properties: Property[] = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+    ],
     price: 12500000,
     rooms: "2-комн. квартира",
     area: 54,
@@ -31,10 +45,23 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "2",
     houseType: "monolith",
+    address: "ул. Усачёва, д. 12, кв. 45",
+    description: "Светлая двухкомнатная квартира с качественным ремонтом в престижном районе Хамовники. Просторная кухня-гостиная, две изолированные спальни, гардеробная. Окна выходят во двор, тихо. Развитая инфраструктура, рядом парк и набережная.",
+    seller: {
+      name: "Анна Петрова",
+      phone: "+7 (999) 123-45-67",
+      type: "owner",
+    },
+    features: ["Балкон", "Кондиционер", "Встроенная кухня", "Гардеробная", "Паркинг"],
+    yearBuilt: 2018,
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    ],
     price: 8900000,
     rooms: "1-комн. квартира",
     area: 38,
@@ -47,10 +74,25 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "1",
     houseType: "panel",
+    address: "Митинская ул., д. 28, кв. 112",
+    description: "Уютная однокомнатная квартира с современным ремонтом. Удобная планировка, большая кухня. Тихий зеленый район с развитой инфраструктурой. Рядом школы, детские сады, торговые центры.",
+    seller: {
+      name: "Сергей Иванов",
+      phone: "+7 (916) 555-88-99",
+      type: "agent",
+    },
+    features: ["Балкон", "Встроенная кухня", "Домофон"],
+    yearBuilt: 2005,
   },
   {
     id: 3,
-    image: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+    ],
     price: 18700000,
     rooms: "3-комн. квартира",
     area: 78,
@@ -63,10 +105,22 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "3",
     houseType: "monolith",
+    address: "Пресненская наб., д. 8, кв. 234",
+    description: "Роскошная трехкомнатная квартира в элитном жилом комплексе. Панорамные окна с видом на Москву-реку. Дизайнерский ремонт, премиальные материалы. Две ванные комнаты, мастер-спальня с гардеробной. Консьерж-сервис, охраняемая территория.",
+    seller: {
+      name: "Елена Смирнова",
+      phone: "+7 (903) 777-22-33",
+      type: "agent",
+    },
+    features: ["Панорамные окна", "2 санузла", "Гардеробная", "Консьерж", "Подземный паркинг", "Кондиционер"],
+    yearBuilt: 2020,
   },
   {
     id: 4,
-    image: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+    ],
     price: 6200000,
     rooms: "Студия",
     area: 28,
@@ -79,10 +133,23 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "studio",
     houseType: "panel",
+    address: "ул. Совхозная, д. 15, кв. 78",
+    description: "Компактная студия с функциональной планировкой. Идеально для молодой пары или одного человека. Свежий косметический ремонт, мебель и техника остаются. Удобная транспортная доступность.",
+    seller: {
+      name: "Михаил Козлов",
+      phone: "+7 (926) 444-11-22",
+      type: "owner",
+    },
+    features: ["Встроенная кухня", "Мебель", "Техника"],
+    yearBuilt: 2015,
   },
   {
     id: 5,
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+    ],
     price: 15300000,
     rooms: "2-комн. квартира",
     area: 62,
@@ -95,10 +162,24 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "2",
     houseType: "brick",
+    address: "Садовая-Черногрязская ул., д. 5, кв. 18",
+    description: "Просторная двушка в сталинском доме с высокими потолками. Классический ремонт, паркетные полы. Центральное расположение, тихий двор. Идеально для ценителей исторической архитектуры.",
+    seller: {
+      name: "Ольга Новикова",
+      phone: "+7 (985) 333-66-99",
+      type: "owner",
+    },
+    features: ["Высокие потолки", "Паркет", "Лепнина", "Балкон"],
+    yearBuilt: 1952,
   },
   {
     id: 6,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop",
+    ],
     price: 45000000,
     rooms: "Дом",
     area: 280,
@@ -111,10 +192,22 @@ export const properties: Property[] = [
     type: "house",
     roomCount: "4+",
     houseType: "brick",
+    address: "пос. Коммунарка, ул. Лесная, д. 12",
+    description: "Современный загородный дом в престижном поселке. 5 спален, 3 санузла, просторная гостиная с камином. Участок 15 соток с ландшафтным дизайном. Гараж на 2 машины, баня, беседка. Все коммуникации центральные.",
+    seller: {
+      name: "Дмитрий Волков",
+      phone: "+7 (495) 888-77-66",
+      type: "agent",
+    },
+    features: ["Гараж", "Баня", "Камин", "Участок 15 соток", "Беседка", "Ландшафт"],
+    yearBuilt: 2019,
   },
   {
     id: 7,
-    image: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+    ],
     price: 4500000,
     rooms: "Комната",
     area: 18,
@@ -127,10 +220,24 @@ export const properties: Property[] = [
     type: "room",
     roomCount: "1",
     houseType: "brick",
+    address: "Измайловский проспект, д. 45, кв. 12",
+    description: "Светлая комната в трехкомнатной квартире. Два соседа — тихие работающие люди. Кухня и санузел в хорошем состоянии. Рядом Измайловский парк, отличное место для прогулок.",
+    seller: {
+      name: "Наталья Сидорова",
+      phone: "+7 (915) 222-33-44",
+      type: "owner",
+    },
+    features: ["Мебель", "Интернет"],
+    yearBuilt: 1975,
   },
   {
     id: 8,
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
+    ],
     price: 22500000,
     rooms: "4-комн. квартира",
     area: 105,
@@ -143,10 +250,23 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "4+",
     houseType: "monolith",
+    address: "Новый Арбат, д. 21, кв. 156",
+    description: "Шикарная четырехкомнатная квартира в самом центре Москвы. Евроремонт, три изолированные спальни, кабинет. Вид на Москву с высоты 15-го этажа. Охраняемый дом с консьержем.",
+    seller: {
+      name: "Александр Морозов",
+      phone: "+7 (495) 999-00-11",
+      type: "agent",
+    },
+    features: ["3 спальни", "Кабинет", "Консьерж", "Охрана", "Кондиционер", "2 санузла"],
+    yearBuilt: 2016,
   },
   {
     id: 9,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=450&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+    ],
     price: 9800000,
     rooms: "1-комн. квартира",
     area: 42,
@@ -159,5 +279,14 @@ export const properties: Property[] = [
     type: "apartment",
     roomCount: "1",
     houseType: "panel",
+    address: "Люблинская ул., д. 165, кв. 89",
+    description: "Отличная однокомнатная квартира с большой кухней-гостиной. Современный ремонт в светлых тонах. Остается вся мебель и техника. Развитый район, много магазинов и кафе.",
+    seller: {
+      name: "Виктория Белова",
+      phone: "+7 (977) 666-55-44",
+      type: "owner",
+    },
+    features: ["Кухня-гостиная", "Мебель", "Техника", "Балкон"],
+    yearBuilt: 2012,
   },
 ];
