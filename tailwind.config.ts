@@ -47,6 +47,21 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        cian: {
+          blue: "hsl(var(--cian-blue))",
+          "blue-hover": "hsl(var(--cian-blue-hover))",
+          yellow: "hsl(var(--cian-yellow))",
+          green: "hsl(var(--cian-green))",
+          red: "hsl(var(--cian-red))",
+          orange: "hsl(var(--cian-orange))",
+        },
+        metro: {
+          red: "hsl(var(--metro-red))",
+          green: "hsl(var(--metro-green))",
+          blue: "hsl(var(--metro-blue))",
+          orange: "hsl(var(--metro-orange))",
+          purple: "hsl(var(--metro-purple))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
