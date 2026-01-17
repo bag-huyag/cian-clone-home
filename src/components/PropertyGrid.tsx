@@ -12,8 +12,8 @@ const PropertyGrid = ({ properties, favorites, onToggleFavorite }: PropertyGridP
     return (
       <div className="flex items-center justify-center h-64 bg-card rounded-xl border border-border">
         <div className="text-center">
-          <p className="text-lg text-muted-foreground mb-2">Объявления не найдены</p>
-          <p className="text-sm text-muted-foreground">Попробуйте изменить параметры поиска</p>
+          <p className="text-lg text-muted-foreground mb-2">Эълонҳо ёфт нашуданд</p>
+          <p className="text-sm text-muted-foreground">Параметрҳои ҷустуҷӯро тағйир диҳед</p>
         </div>
       </div>
     );

@@ -18,9 +18,9 @@ const PropertyDetail = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Объявление не найдено</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Эълон ёфт нашуд</h1>
           <Link to="/">
-            <Button>Вернуться на главную</Button>
+            <Button>Бозгашт ба саҳифаи асосӣ</Button>
           </Link>
         </div>
       </div>
@@ -28,28 +28,17 @@ const PropertyDetail = () => {
   }
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ru-RU").format(price) + " ₽";
+    return new Intl.NumberFormat("tg-TJ").format(price) + " сомонӣ";
   };
 
   const pricePerMeter = Math.round(property.price / property.area);
 
-  const getMetroColorClass = (color: string) => {
-    const colorMap: Record<string, string> = {
-      red: "bg-metro-red",
-      green: "bg-metro-green",
-      blue: "bg-metro-blue",
-      orange: "bg-metro-orange",
-      purple: "bg-metro-purple",
-    };
-    return colorMap[color] || "bg-metro-red";
-  };
-
   const getHouseTypeName = (type: string) => {
     const types: Record<string, string> = {
-      panel: "Панельный",
-      brick: "Кирпичный",
-      monolith: "Монолитный",
-      block: "Блочный",
+      panel: "Панелӣ",
+      brick: "Хиштӣ",
+      monolith: "Монолитӣ",
+      block: "Блокӣ",
     };
     return types[type] || type;
   };
@@ -63,10 +52,10 @@ const PropertyDetail = () => {
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="w-5 h-5" />
-                <span className="hidden sm:inline">Назад к поиску</span>
+                <span className="hidden sm:inline">Бозгашт ба ҷустуҷӯ</span>
               </Link>
             </div>
-            <h1 className="text-2xl font-bold text-primary">ЦИАН</h1>
+            <h1 className="text-2xl font-bold text-primary">МАНЗИЛ.ТҶ</h1>
           </div>
         </div>
       </header>
@@ -88,14 +77,14 @@ const PropertyDetail = () => {
                   {formatPrice(property.price)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {formatPrice(pricePerMeter)} за м²
+                  {formatPrice(pricePerMeter)} барои м²
                 </p>
               </div>
             </div>
 
             {/* Main Info */}
             <div className="bg-card rounded-xl p-6 border border-border">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Основная информация</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-4">Маълумоти асосӣ</h2>
               
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
@@ -103,7 +92,7 @@ const PropertyDetail = () => {
                     <Home className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Площадь</p>
+                    <p className="text-sm text-muted-foreground">Масоҳат</p>
                     <p className="font-medium text-foreground">{property.area} м²</p>
                   </div>
                 </div>
@@ -113,8 +102,8 @@ const PropertyDetail = () => {
                     <Building2 className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Этаж</p>
-                    <p className="font-medium text-foreground">{property.floor} из {property.totalFloors}</p>
+                    <p className="text-sm text-muted-foreground">Ошёна</p>
+                    <p className="font-medium text-foreground">{property.floor} аз {property.totalFloors}</p>
                   </div>
                 </div>
 
@@ -123,7 +112,7 @@ const PropertyDetail = () => {
                     <Building2 className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Тип дома</p>
+                    <p className="text-sm text-muted-foreground">Навъи бино</p>
                     <p className="font-medium text-foreground">{getHouseTypeName(property.houseType)}</p>
                   </div>
                 </div>
@@ -133,7 +122,7 @@ const PropertyDetail = () => {
                     <Calendar className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Год постройки</p>
+                    <p className="text-sm text-muted-foreground">Соли сохтмон</p>
                     <p className="font-medium text-foreground">{property.yearBuilt}</p>
                   </div>
                 </div>
@@ -142,33 +131,33 @@ const PropertyDetail = () => {
 
             {/* Address */}
             <div className="bg-card rounded-xl p-6 border border-border">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Расположение</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-4">Ҷойгиршавӣ</h2>
               
               <div className="flex items-start gap-3 mb-4">
                 <MapPin className="w-5 h-5 text-muted-foreground mt-0.5" />
                 <div>
                   <p className="font-medium text-foreground">{property.address}</p>
-                  <p className="text-sm text-muted-foreground">{property.district}</p>
+                  <p className="text-sm text-muted-foreground">{property.city}, {property.district}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className={cn("w-3 h-3 rounded-full", getMetroColorClass(property.metroColor))} />
-                <span className="text-foreground">{property.metro}</span>
-                <span className="text-muted-foreground">• {property.metroTime} мин пешком</span>
+                <MapPin className="w-4 h-4 text-primary" />
+                <span className="text-foreground">{property.landmark}</span>
+                <span className="text-muted-foreground">• {property.landmarkTime} дақ пиёда</span>
               </div>
             </div>
 
             {/* Description */}
             <div className="bg-card rounded-xl p-6 border border-border">
-              <h2 className="text-lg font-semibold text-foreground mb-4">Описание</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-4">Тавсиф</h2>
               <p className="text-foreground leading-relaxed">{property.description}</p>
             </div>
 
             {/* Features */}
             {property.features.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h2 className="text-lg font-semibold text-foreground mb-4">Удобства</h2>
+                <h2 className="text-lg font-semibold text-foreground mb-4">Шароитҳо</h2>
                 <div className="flex flex-wrap gap-2">
                   {property.features.map((feature, index) => (
                     <Badge key={index} variant="secondary" className="text-sm">
@@ -192,7 +181,7 @@ const PropertyDetail = () => {
                   {formatPrice(property.price)}
                 </p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {formatPrice(pricePerMeter)} за м²
+                  {formatPrice(pricePerMeter)} барои м²
                 </p>
                 
                 <Button
@@ -201,13 +190,13 @@ const PropertyDetail = () => {
                   onClick={() => setIsFavorite(!isFavorite)}
                 >
                   <Heart className={cn("w-5 h-5", isFavorite && "fill-cian-red text-cian-red")} />
-                  {isFavorite ? "В избранном" : "В избранное"}
+                  {isFavorite ? "Дар интихобшудаҳо" : "Ба интихобшудаҳо"}
                 </Button>
               </div>
 
               {/* Seller Card */}
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h2 className="text-lg font-semibold text-foreground mb-4">Контакты</h2>
+                <h2 className="text-lg font-semibold text-foreground mb-4">Тамос</h2>
                 
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-14 h-14 bg-muted rounded-full flex items-center justify-center">
@@ -216,7 +205,7 @@ const PropertyDetail = () => {
                   <div>
                     <p className="font-medium text-foreground">{property.seller.name}</p>
                     <Badge variant={property.seller.type === "owner" ? "default" : "secondary"}>
-                      {property.seller.type === "owner" ? "Собственник" : "Агент"}
+                      {property.seller.type === "owner" ? "Соҳиб" : "Агент"}
                     </Badge>
                   </div>
                 </div>
@@ -231,12 +220,12 @@ const PropertyDetail = () => {
                 ) : (
                   <Button className="w-full gap-2" onClick={() => setShowPhone(true)}>
                     <Phone className="w-5 h-5" />
-                    Показать телефон
+                    Нишон додани телефон
                   </Button>
                 )}
 
                 <p className="text-xs text-muted-foreground text-center mt-4">
-                  Пожалуйста, скажите, что нашли объявление на ЦИАН
+                  Лутфан гӯед, ки эълонро дар МАНЗИЛ.ТҶ ёфтед
                 </p>
               </div>
             </div>
