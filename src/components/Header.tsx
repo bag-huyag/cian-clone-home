@@ -13,19 +13,19 @@ const Header = ({ favoritesCount }: HeaderProps) => {
           {/* Logo */}
           <div className="flex items-center gap-8">
             <h1 className="text-2xl font-bold text-primary tracking-tight">
-              ЦИАН
+              МАНЗИЛ.ТҶ
             </h1>
             
             {/* Navigation */}
             <nav className="hidden md:flex items-center gap-6">
               <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-                Купить
+                Харидан
               </a>
               <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-                Снять
+                Иҷора
               </a>
               <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-                Новостройки
+                Навсозиҳо
               </a>
             </nav>
           </div>
@@ -33,7 +33,7 @@ const Header = ({ favoritesCount }: HeaderProps) => {
           {/* Actions */}
           <div className="flex items-center gap-4">
             <Button variant="outline" className="hidden sm:flex">
-              Разместить объявление
+              Эълон гузоштан
             </Button>
             
             <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">

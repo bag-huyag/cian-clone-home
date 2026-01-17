@@ -11,7 +11,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [propertyType, setPropertyType] = useState("all");
   const [roomCount, setRoomCount] = useState("all");
-  const [priceRange, setPriceRange] = useState([1000000, 50000000]);
+  const [priceRange, setPriceRange] = useState([50000, 2000000]);
   const [houseTypes, setHouseTypes] = useState<string[]>([]);
   const [floors, setFloors] = useState<string[]>([]);
   
@@ -32,7 +32,8 @@ const Index = () => {
         const query = searchQuery.toLowerCase();
         const matchesSearch =
           property.district.toLowerCase().includes(query) ||
-          property.metro.toLowerCase().includes(query);
+          property.city.toLowerCase().includes(query) ||
+          property.landmark.toLowerCase().includes(query);
         if (!matchesSearch) return false;
       }
 
@@ -103,7 +104,7 @@ const Index = () => {
           {/* Property Grid */}
           <div className="flex-1">
             <div className="mb-4 text-sm text-muted-foreground">
-              Найдено {filteredProperties.length} объявлений
+              {filteredProperties.length} эълон ёфт шуд
             </div>
             <PropertyGrid
               properties={filteredProperties}

@@ -13,16 +13,16 @@ interface FilterPanelProps {
 }
 
 const houseTypeOptions = [
-  { id: "panel", label: "Панельный" },
-  { id: "brick", label: "Кирпичный" },
-  { id: "monolith", label: "Монолитный" },
-  { id: "block", label: "Блочный" },
+  { id: "panel", label: "Панелӣ" },
+  { id: "brick", label: "Хиштӣ" },
+  { id: "monolith", label: "Монолитӣ" },
+  { id: "block", label: "Блокӣ" },
 ];
 
 const floorOptions = [
-  { id: "not-first", label: "Не первый" },
-  { id: "not-last", label: "Не последний" },
-  { id: "only-last", label: "Только последний" },
+  { id: "not-first", label: "На аввалин" },
+  { id: "not-last", label: "На охирин" },
+  { id: "only-last", label: "Танҳо охирин" },
 ];
 
 const FilterPanel = ({
@@ -37,7 +37,7 @@ const FilterPanel = ({
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)} млн`;
     }
-    return `${value.toLocaleString()} ₽`;
+    return `${value.toLocaleString()} сомонӣ`;
   };
 
   const toggleHouseType = (id: string) => {
@@ -58,20 +58,20 @@ const FilterPanel = ({
 
   return (
     <aside className="bg-card rounded-xl p-6 shadow-sm border border-border">
-      <h2 className="text-lg font-semibold text-foreground mb-6">Фильтры</h2>
+      <h2 className="text-lg font-semibold text-foreground mb-6">Филтрҳо</h2>
 
       {/* Price Range */}
       <div className="mb-6">
         <Label className="text-sm font-medium text-foreground mb-4 block">
-          Цена, ₽
+          Нарх, сомонӣ
         </Label>
         <div className="px-2">
           <Slider
             value={priceRange}
             onValueChange={setPriceRange}
-            min={1000000}
-            max={50000000}
-            step={500000}
+            min={50000}
+            max={2000000}
+            step={10000}
             className="mb-3"
           />
         </div>
@@ -84,7 +84,7 @@ const FilterPanel = ({
       {/* House Type */}
       <div className="mb-6">
         <Label className="text-sm font-medium text-foreground mb-4 block">
-          Тип дома
+          Навъи бино
         </Label>
         <div className="space-y-3">
           {houseTypeOptions.map((option) => (
@@ -108,7 +108,7 @@ const FilterPanel = ({
       {/* Floor */}
       <div className="mb-6">
         <Label className="text-sm font-medium text-foreground mb-4 block">
-          Этаж
+          Ошёна
         </Label>
         <div className="space-y-3">
           {floorOptions.map((option) => (
@@ -129,7 +129,7 @@ const FilterPanel = ({
         </div>
       </div>
 
-      <Button className="w-full">Показать объявления</Button>
+      <Button className="w-full">Нишон додани эълонҳо</Button>
     </aside>
   );
 };

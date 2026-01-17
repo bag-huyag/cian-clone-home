@@ -34,7 +34,7 @@ const SearchPanel = ({
           <div className="flex-1">
             <Input
               type="text"
-              placeholder="Город, адрес, район, метро..."
+              placeholder="Шаҳр, суроға, ноҳия..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-12 text-base"
@@ -44,35 +44,35 @@ const SearchPanel = ({
           {/* Property Type */}
           <Select value={propertyType} onValueChange={setPropertyType}>
             <SelectTrigger className="w-full md:w-48 h-12">
-              <SelectValue placeholder="Тип недвижимости" />
+              <SelectValue placeholder="Навъи амвол" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все типы</SelectItem>
-              <SelectItem value="apartment">Квартира</SelectItem>
-              <SelectItem value="house">Дом</SelectItem>
-              <SelectItem value="room">Комната</SelectItem>
+              <SelectItem value="all">Ҳама навъҳо</SelectItem>
+              <SelectItem value="apartment">Хона</SelectItem>
+              <SelectItem value="house">Ҳавлӣ</SelectItem>
+              <SelectItem value="room">Ҳуҷра</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Room Count */}
           <Select value={roomCount} onValueChange={setRoomCount}>
             <SelectTrigger className="w-full md:w-40 h-12">
-              <SelectValue placeholder="Комнаты" />
+              <SelectValue placeholder="Хонаҳо" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Любое</SelectItem>
+              <SelectItem value="all">Ҳама</SelectItem>
               <SelectItem value="studio">Студия</SelectItem>
-              <SelectItem value="1">1 комната</SelectItem>
-              <SelectItem value="2">2 комнаты</SelectItem>
-              <SelectItem value="3">3 комнаты</SelectItem>
-              <SelectItem value="4+">4+ комнат</SelectItem>
+              <SelectItem value="1">1 хона</SelectItem>
+              <SelectItem value="2">2 хона</SelectItem>
+              <SelectItem value="3">3 хона</SelectItem>
+              <SelectItem value="4+">4+ хона</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Search Button */}
           <Button className="h-12 px-8 gap-2">
             <Search className="w-5 h-5" />
-            <span className="hidden sm:inline">Найти</span>
+            <span className="hidden sm:inline">Ҷустуҷӯ</span>
           </Button>
         </div>
       </div>
