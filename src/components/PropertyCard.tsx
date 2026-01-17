@@ -26,7 +26,7 @@ const PropertyCard = ({ property, isFavorite, onToggleFavorite }: PropertyCardPr
   };
 
   return (
-    <article className="bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-200 group">
+    <article className="relative bg-card rounded-xl overflow-hidden shadow-sm border border-border hover:shadow-md transition-shadow duration-200 group">
       {/* Image */}
       <Link to={`/property/${property.id}`} className="block relative aspect-[4/3] bg-muted overflow-hidden">
         <img
@@ -55,7 +55,6 @@ const PropertyCard = ({ property, isFavorite, onToggleFavorite }: PropertyCardPr
             ? "bg-cian-red text-white"
             : "bg-white/90 text-muted-foreground hover:bg-white hover:text-cian-red"
         )}
-        style={{ position: 'absolute', top: '12px', right: '12px' }}
       >
         <Heart className={cn("w-5 h-5", isFavorite && "fill-current")} />
       </button>
