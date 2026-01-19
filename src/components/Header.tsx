@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -36,6 +36,14 @@ const Header = ({ favoritesCount }: HeaderProps) => {
             <Button variant="outline" className="hidden sm:flex" asChild>
               <Link to="/create">Эълон гузоштан</Link>
             </Button>
+            
+            <Link 
+              to="/profile" 
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+              title="Эълонҳои ман"
+            >
+              <User className="w-6 h-6 text-muted-foreground" />
+            </Link>
             
             <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
               <Heart className="w-6 h-6 text-muted-foreground" />
