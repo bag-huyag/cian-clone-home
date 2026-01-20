@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useUserListings } from "@/hooks/useUserListings";
+import { useListings } from "@/hooks/useListings";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -63,11 +64,21 @@ const features = [
   "Тирезаҳои панорамӣ",
 ];
 
+const roomsMap: Record<string, string> = {
+  "Студия": "studio",
+  "1-хонагӣ": "1",
+  "2-хонагӣ": "2",
+  "3-хонагӣ": "3",
+  "4-хонагӣ": "4",
+  "5+-хонагӣ": "5+",
+};
+
 const EditListing = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { getListing, updateListing, listings } = useUserListings();
+  const { getListing, updateListing } = useListings();
+  const { user, loading: authLoading } = useAuth();
 
   const [listingType, setListingType] = useState<"sale" | "rent">("sale");
   const [propertyType, setPropertyType] = useState("");
@@ -89,37 +100,48 @@ const EditListing = () => {
   const [sellerType, setSellerType] = useState<"owner" | "agent">("owner");
   const [images, setImages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (id && listings.length > 0) {
-      const listing = getListing(id);
-      if (listing) {
-        setPropertyType(listing.type);
-        setCity(listing.city);
-        setDistrict(listing.district);
-        setAddress(listing.address);
-        setLandmark(listing.landmark);
-        setRooms(listing.roomCount);
-        setArea(String(listing.area));
-        setFloor(String(listing.floor));
-        setTotalFloors(String(listing.totalFloors));
-        setHouseType(listing.houseType);
-        setYearBuilt(String(listing.yearBuilt));
-        setPrice(String(listing.price));
-        setDescription(listing.description);
-        setSelectedFeatures(listing.features);
-        setSellerName(listing.seller.name);
-        setSellerPhone(listing.seller.phone);
-        setSellerType(listing.seller.type);
-        setImages(listing.images);
-        setIsLoading(false);
-      } else {
-        navigate("/profile");
-      }
-    } else if (listings.length > 0) {
-      navigate("/profile");
+    if (!authLoading && !user) {
+      navigate("/auth");
+      return;
     }
-  }, [id, listings, getListing, navigate]);
+
+    const loadListing = async () => {
+      if (id && user) {
+        const listing = await getListing(id);
+        if (listing) {
+          setListingType(listing.listing_type);
+          setPropertyType(listing.property_type);
+          setCity(listing.city);
+          setDistrict(listing.district);
+          setAddress(listing.address || "");
+          setLandmark(listing.landmark || "");
+          setRooms(roomsMap[listing.rooms] || listing.rooms);
+          setArea(String(listing.area));
+          setFloor(String(listing.floor));
+          setTotalFloors(String(listing.total_floors));
+          setHouseType(listing.house_type || "");
+          setYearBuilt(listing.year_built ? String(listing.year_built) : "");
+          setPrice(String(listing.price));
+          setDescription(listing.description || "");
+          setSelectedFeatures(listing.features);
+          setSellerName(listing.seller_name);
+          setSellerPhone(listing.seller_phone);
+          setSellerType(listing.seller_type);
+          setImages(listing.images);
+          setIsLoading(false);
+        } else {
+          navigate("/profile");
+        }
+      }
+    };
+
+    if (!authLoading && user) {
+      loadListing();
+    }
+  }, [id, user, authLoading, getListing, navigate]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -144,7 +166,7 @@ const EditListing = () => {
   };
 
   const getRoomsLabel = (roomValue: string) => {
-    const roomsMap: Record<string, string> = {
+    const roomsLabelMap: Record<string, string> = {
       "studio": "Студия",
       "1": "1-хонагӣ",
       "2": "2-хонагӣ",
@@ -152,10 +174,10 @@ const EditListing = () => {
       "4": "4-хонагӣ",
       "5+": "5+-хонагӣ",
     };
-    return roomsMap[roomValue] || roomValue;
+    return roomsLabelMap[roomValue] || roomValue;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!propertyType || !city || !district || !rooms || !area || !price || !sellerName || !sellerPhone) {
@@ -177,41 +199,49 @@ const EditListing = () => {
     }
 
     if (id) {
-      updateListing(id, {
-        images,
-        price: Number(price),
+      setIsSubmitting(true);
+      
+      const success = await updateListing(id, {
+        listing_type: listingType,
+        property_type: propertyType,
+        city,
+        district,
+        address,
+        landmark,
         rooms: getRoomsLabel(rooms),
         area: Number(area),
         floor: Number(floor) || 1,
-        totalFloors: Number(totalFloors) || 1,
-        district,
-        city,
-        landmark,
-        landmarkTime: 5,
-        type: propertyType,
-        roomCount: rooms,
-        houseType,
-        address,
+        total_floors: Number(totalFloors) || 1,
+        house_type: houseType || null,
+        year_built: Number(yearBuilt) || null,
+        price: Number(price),
         description,
-        seller: {
-          name: sellerName,
-          phone: sellerPhone,
-          type: sellerType,
-        },
         features: selectedFeatures,
-        yearBuilt: Number(yearBuilt) || 2020,
+        images,
+        seller_name: sellerName,
+        seller_phone: sellerPhone,
+        seller_type: sellerType,
       });
 
-      toast({
-        title: "Муваффақият!",
-        description: "Эълон бомуваффақият таҳрир карда шуд",
-      });
+      setIsSubmitting(false);
 
-      navigate("/profile");
+      if (success) {
+        toast({
+          title: "Муваффақият!",
+          description: "Эълон бомуваффақият таҳрир карда шуд",
+        });
+        navigate("/profile");
+      } else {
+        toast({
+          title: "Хатогӣ",
+          description: "Эълон таҳрир нашуд",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Бор мешавад...</p>
@@ -238,6 +268,25 @@ const EditListing = () => {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Listing Type */}
+            <section className="bg-card rounded-xl p-6 border border-border">
+              <h2 className="text-lg font-semibold mb-4">Навъи эълон</h2>
+              <RadioGroup
+                value={listingType}
+                onValueChange={(value) => setListingType(value as "sale" | "rent")}
+                className="flex gap-6"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="sale" id="sale" />
+                  <Label htmlFor="sale" className="cursor-pointer">Фурӯш</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="rent" id="rent" />
+                  <Label htmlFor="rent" className="cursor-pointer">Иҷора</Label>
+                </div>
+              </RadioGroup>
+            </section>
+
             {/* Property Type */}
             <section className="bg-card rounded-xl p-6 border border-border">
               <h2 className="text-lg font-semibold mb-4">Навъи мулк</h2>
@@ -406,6 +455,9 @@ const EditListing = () => {
                   onChange={(e) => setPrice(e.target.value)}
                   className="max-w-xs"
                 />
+                {listingType === "rent" && (
+                  <p className="text-sm text-muted-foreground">дар як моҳ</p>
+                )}
               </div>
             </section>
 
@@ -477,11 +529,11 @@ const EditListing = () => {
                 {features.map((feature) => (
                   <div key={feature} className="flex items-center space-x-2">
                     <Checkbox
-                      id={`feature-${feature}`}
+                      id={feature}
                       checked={selectedFeatures.includes(feature)}
                       onCheckedChange={() => handleFeatureToggle(feature)}
                     />
-                    <Label htmlFor={`feature-${feature}`} className="cursor-pointer text-sm">
+                    <Label htmlFor={feature} className="cursor-pointer text-sm">
                       {feature}
                     </Label>
                   </div>
@@ -491,53 +543,54 @@ const EditListing = () => {
 
             {/* Seller Info */}
             <section className="bg-card rounded-xl p-6 border border-border">
-              <h2 className="text-lg font-semibold mb-4">Маълумот дар бораи фурӯшанда</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="sellerName">Ном *</Label>
-                  <Input
-                    id="sellerName"
-                    placeholder="Номи шумо"
-                    value={sellerName}
-                    onChange={(e) => setSellerName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sellerPhone">Телефон *</Label>
-                  <Input
-                    id="sellerPhone"
-                    placeholder="+992 (XX) XXX-XX-XX"
-                    value={sellerPhone}
-                    onChange={(e) => setSellerPhone(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <Label>Шумо кӣ ҳастед?</Label>
-                  <RadioGroup
-                    value={sellerType}
-                    onValueChange={(value) => setSellerType(value as "owner" | "agent")}
-                    className="flex gap-6"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="owner" id="owner" />
-                      <Label htmlFor="owner" className="cursor-pointer">Соҳиб</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="agent" id="agent" />
-                      <Label htmlFor="agent" className="cursor-pointer">Агент</Label>
-                    </div>
-                  </RadioGroup>
+              <h2 className="text-lg font-semibold mb-4">Маълумоти тамос</h2>
+              <div className="space-y-4">
+                <RadioGroup
+                  value={sellerType}
+                  onValueChange={(value) => setSellerType(value as "owner" | "agent")}
+                  className="flex gap-6 mb-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="owner" id="owner" />
+                    <Label htmlFor="owner" className="cursor-pointer">Соҳиб</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="agent" id="agent" />
+                    <Label htmlFor="agent" className="cursor-pointer">Агент</Label>
+                  </div>
+                </RadioGroup>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="sellerName">Номи шумо *</Label>
+                    <Input
+                      id="sellerName"
+                      placeholder="Ном ва насаб"
+                      value={sellerName}
+                      onChange={(e) => setSellerName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="sellerPhone">Телефон *</Label>
+                    <Input
+                      id="sellerPhone"
+                      type="tel"
+                      placeholder="+992 (XX) XXX-XX-XX"
+                      value={sellerPhone}
+                      onChange={(e) => setSellerPhone(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </section>
 
             {/* Submit */}
             <div className="flex gap-4">
-              <Button type="submit" size="lg" className="flex-1">
-                Захира кардан
+              <Button type="submit" size="lg" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting ? "Нигоҳдорӣ..." : "Нигоҳ доштан"}
               </Button>
               <Button type="button" variant="outline" size="lg" onClick={() => navigate("/profile")}>
-                Бекор
+                Бекор кардан
               </Button>
             </div>
           </form>

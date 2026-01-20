@@ -14,7 +14,117 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listings: {
+        Row: {
+          address: string | null
+          area: number
+          city: string
+          created_at: string
+          description: string | null
+          district: string
+          features: string[] | null
+          floor: number | null
+          house_type: string | null
+          id: string
+          images: string[] | null
+          landmark: string | null
+          listing_type: string
+          price: number
+          property_type: string
+          rooms: string
+          seller_name: string
+          seller_phone: string
+          seller_type: string | null
+          status: string
+          total_floors: number | null
+          updated_at: string
+          user_id: string
+          year_built: number | null
+        }
+        Insert: {
+          address?: string | null
+          area: number
+          city: string
+          created_at?: string
+          description?: string | null
+          district: string
+          features?: string[] | null
+          floor?: number | null
+          house_type?: string | null
+          id?: string
+          images?: string[] | null
+          landmark?: string | null
+          listing_type?: string
+          price: number
+          property_type: string
+          rooms: string
+          seller_name: string
+          seller_phone: string
+          seller_type?: string | null
+          status?: string
+          total_floors?: number | null
+          updated_at?: string
+          user_id: string
+          year_built?: number | null
+        }
+        Update: {
+          address?: string | null
+          area?: number
+          city?: string
+          created_at?: string
+          description?: string | null
+          district?: string
+          features?: string[] | null
+          floor?: number | null
+          house_type?: string | null
+          id?: string
+          images?: string[] | null
+          landmark?: string | null
+          listing_type?: string
+          price?: number
+          property_type?: string
+          rooms?: string
+          seller_name?: string
+          seller_phone?: string
+          seller_type?: string | null
+          status?: string
+          total_floors?: number | null
+          updated_at?: string
+          user_id?: string
+          year_built?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          seller_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          seller_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          seller_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

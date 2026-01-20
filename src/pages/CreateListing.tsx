@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, X, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useUserListings } from "@/hooks/useUserListings";
+import { useListings } from "@/hooks/useListings";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -66,7 +67,8 @@ const features = [
 const CreateListing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { addListing } = useUserListings();
+  const { addListing } = useListings();
+  const { user, loading: authLoading } = useAuth();
   
   const [listingType, setListingType] = useState<"sale" | "rent">("sale");
   const [propertyType, setPropertyType] = useState("");
@@ -87,6 +89,13 @@ const CreateListing = () => {
   const [sellerPhone, setSellerPhone] = useState("");
   const [sellerType, setSellerType] = useState<"owner" | "agent">("owner");
   const [images, setImages] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -122,7 +131,7 @@ const CreateListing = () => {
     return roomsMap[roomValue] || roomValue;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validation
@@ -144,39 +153,63 @@ const CreateListing = () => {
       return;
     }
 
-    // Save to localStorage
-    addListing({
-      images,
-      price: Number(price),
-      rooms: getRoomsLabel(rooms),
-      area: Number(area),
-      floor: Number(floor) || 1,
-      totalFloors: Number(totalFloors) || 1,
-      district,
-      city,
-      landmark,
-      landmarkTime: 5,
-      type: propertyType,
-      roomCount: rooms,
-      houseType,
-      address,
-      description,
-      seller: {
-        name: sellerName,
-        phone: sellerPhone,
-        type: sellerType,
-      },
-      features: selectedFeatures,
-      yearBuilt: Number(yearBuilt) || 2020,
-    });
+    setIsSubmitting(true);
 
-    toast({
-      title: "Муваффақият!",
-      description: "Эълони шумо барои тасдиқ фиристода шуд",
-    });
+    try {
+      const result = await addListing({
+        listing_type: listingType,
+        property_type: propertyType,
+        city,
+        district,
+        address,
+        landmark,
+        rooms: getRoomsLabel(rooms),
+        area: Number(area),
+        floor: Number(floor) || 1,
+        total_floors: Number(totalFloors) || 1,
+        house_type: houseType || null,
+        year_built: Number(yearBuilt) || null,
+        price: Number(price),
+        description,
+        features: selectedFeatures,
+        images,
+        seller_name: sellerName,
+        seller_phone: sellerPhone,
+        seller_type: sellerType,
+        status: "pending",
+      });
 
-    navigate("/profile");
+      if (result) {
+        toast({
+          title: "Муваффақият!",
+          description: "Эълони шумо барои тасдиқ фиристода шуд",
+        });
+        navigate("/profile");
+      } else {
+        toast({
+          title: "Хатогӣ",
+          description: "Эълон илова нашуд. Лутфан дубора кӯшиш кунед.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Хатогӣ",
+        description: "Хатогии сервер рӯй дод",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Бор мешавад...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -516,8 +549,8 @@ const CreateListing = () => {
 
             {/* Submit */}
             <div className="flex gap-4">
-              <Button type="submit" size="lg" className="flex-1">
-                Эълон гузоштан
+              <Button type="submit" size="lg" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting ? "Фиристодан..." : "Эълон гузоштан"}
               </Button>
               <Button type="button" variant="outline" size="lg" onClick={() => navigate("/")}>
                 Бекор кардан
