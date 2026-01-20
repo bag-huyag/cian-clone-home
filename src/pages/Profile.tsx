@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Edit2, Trash2, Eye, Clock, CheckCircle, Archive } from "lucide-react";
+import { ArrowLeft, Plus, Edit2, Trash2, Clock, CheckCircle, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUserListings, UserListing } from "@/hooks/useUserListings";
+import { useListings, Listing } from "@/hooks/useListings";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -21,40 +22,59 @@ import {
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { listings, deleteListing, updateListing } = useUserListings();
+  const { user, loading: authLoading } = useAuth();
+  const { listings, loading, deleteListing, updateListing } = useListings();
   const [activeTab, setActiveTab] = useState<"active" | "pending" | "archived">("active");
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
 
   const filteredListings = listings.filter((listing) => listing.status === activeTab);
 
-  const handleDelete = (id: string) => {
-    deleteListing(id);
-    toast({
-      title: "Нест карда шуд",
-      description: "Эълон бомуваффақият нест карда шуд",
-    });
+  const handleDelete = async (id: string) => {
+    const success = await deleteListing(id);
+    if (success) {
+      toast({
+        title: "Нест карда шуд",
+        description: "Эълон бомуваффақият нест карда шуд",
+      });
+    } else {
+      toast({
+        title: "Хатогӣ",
+        description: "Эълон нест карда нашуд",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleArchive = (id: string) => {
-    updateListing(id, { status: "archived" });
-    toast({
-      title: "Архив карда шуд",
-      description: "Эълон ба архив гузошта шуд",
-    });
+  const handleArchive = async (id: string) => {
+    const success = await updateListing(id, { status: "archived" });
+    if (success) {
+      toast({
+        title: "Архив карда шуд",
+        description: "Эълон ба архив гузошта шуд",
+      });
+    }
   };
 
-  const handleActivate = (id: string) => {
-    updateListing(id, { status: "active" });
-    toast({
-      title: "Фаъол карда шуд",
-      description: "Эълон дубора фаъол шуд",
-    });
+  const handleActivate = async (id: string) => {
+    const success = await updateListing(id, { status: "active" });
+    if (success) {
+      toast({
+        title: "Фаъол карда шуд",
+        description: "Эълон дубора фаъол шуд",
+      });
+    }
   };
 
   const formatPrice = (price: number) => {
     return price.toLocaleString("tg-TJ") + " сомонӣ";
   };
 
-  const getStatusBadge = (status: UserListing["status"]) => {
+  const getStatusBadge = (status: Listing["status"]) => {
     switch (status) {
       case "active":
         return (
@@ -85,6 +105,14 @@ const Profile = () => {
     { id: "pending" as const, label: "Дар интизорӣ", count: listings.filter((l) => l.status === "pending").length },
     { id: "archived" as const, label: "Архив", count: listings.filter((l) => l.status === "archived").length },
   ];
+
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Бор мешавад...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -174,7 +202,7 @@ const Profile = () => {
                         <div className="flex items-center gap-2 mb-2">
                           {getStatusBadge(listing.status)}
                           <span className="text-xs text-muted-foreground">
-                            {new Date(listing.createdAt).toLocaleDateString("ru-RU")}
+                            {new Date(listing.created_at).toLocaleDateString("ru-RU")}
                           </span>
                         </div>
                         <h3 className="font-semibold text-lg text-foreground mb-1">

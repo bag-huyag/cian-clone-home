@@ -1,12 +1,28 @@
-import { Heart, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Heart, User, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderProps {
   favoritesCount: number;
 }
 
 const Header = ({ favoritesCount }: HeaderProps) => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
   return (
     <header className="bg-card border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3">
@@ -34,16 +50,40 @@ const Header = ({ favoritesCount }: HeaderProps) => {
           {/* Actions */}
           <div className="flex items-center gap-4">
             <Button variant="outline" className="hidden sm:flex" asChild>
-              <Link to="/create">Эълон гузоштан</Link>
+              <Link to={user ? "/create" : "/auth"}>Эълон гузоштан</Link>
             </Button>
             
-            <Link 
-              to="/profile" 
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
-              title="Эълонҳои ман"
-            >
-              <User className="w-6 h-6 text-muted-foreground" />
-            </Link>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button 
+                    className="p-2 hover:bg-muted rounded-lg transition-colors"
+                    title="Эълонҳои ман"
+                  >
+                    <User className="w-6 h-6 text-primary" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <User className="w-4 h-4 mr-2" />
+                    Эълонҳои ман
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Баромадан
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link 
+                to="/auth" 
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+                title="Даромадан"
+              >
+                <User className="w-6 h-6 text-muted-foreground" />
+              </Link>
+            )}
             
             <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
               <Heart className="w-6 h-6 text-muted-foreground" />
