@@ -1,7 +1,9 @@
-import { Heart, User, LogOut } from "lucide-react";
+import { Heart, User, LogOut, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +19,20 @@ interface HeaderProps {
 const Header = ({ favoritesCount }: HeaderProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const { data: isAdmin } = useQuery({
+    queryKey: ["isAdminHeader", user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data, error } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
+      });
+      if (error) return false;
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const handleSignOut = async () => {
     await signOut();
@@ -68,6 +84,15 @@ const Header = ({ favoritesCount }: HeaderProps) => {
                     <User className="w-4 h-4 mr-2" />
                     Эълонҳои ман
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate("/admin")}>
+                        <Shield className="w-4 h-4 mr-2" />
+                        Админ-панель
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                     <LogOut className="w-4 h-4 mr-2" />
