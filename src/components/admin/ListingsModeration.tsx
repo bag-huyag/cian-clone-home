@@ -29,9 +29,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { Check, X, Trash2, Eye, Search } from "lucide-react";
+import { Check, X, Trash2, Eye, Search, Pencil } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { EditListingDialog } from "./EditListingDialog";
 
 const statusLabels: Record<string, string> = {
   pending: "На модерации",
@@ -51,6 +52,7 @@ export const ListingsModeration = () => {
   const { allListings, isLoadingListings, updateListingStatus, deleteListing } = useAdmin();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [editingListing, setEditingListing] = useState<ListingWithUser | null>(null);
 
   const filteredListings = allListings.filter((listing) => {
     const matchesSearch =
@@ -182,6 +184,15 @@ export const ListingsModeration = () => {
                         </Link>
                       </Button>
                       
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setEditingListing(listing)}
+                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      
                       {listing.status === "pending" && (
                         <>
                           <Button
@@ -239,6 +250,12 @@ export const ListingsModeration = () => {
       <div className="text-sm text-muted-foreground">
         Показано {filteredListings.length} из {allListings.length} объявлений
       </div>
+
+      <EditListingDialog
+        listing={editingListing}
+        open={!!editingListing}
+        onOpenChange={(open) => !open && setEditingListing(null)}
+      />
     </div>
   );
 };
