@@ -20,11 +20,19 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { ImageEditor } from "./ImageEditor";
 
 interface EditListingDialogProps {
   listing: ListingWithUser | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface ExtendedListing extends ListingWithUser {
+  images?: string[];
+  description?: string;
+  floor?: number;
+  total_floors?: number;
 }
 
 const cities = ["Душанбе", "Худжанд", "Бохтар", "Куляб", "Истаравшан"];
@@ -57,9 +65,12 @@ export const EditListingDialog = ({ listing, open, onOpenChange }: EditListingDi
     floor: "",
     total_floors: "",
   });
+  const [images, setImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (listing) {
+      const extListing = listing as ExtendedListing;
+      setImages(extListing.images || []);
       setFormData({
         city: listing.city || "",
         district: listing.district || "",
@@ -99,6 +110,7 @@ export const EditListingDialog = ({ listing, open, onOpenChange }: EditListingDi
           seller_phone: formData.seller_phone,
           description: formData.description || null,
           floor: formData.floor ? Number(formData.floor) : null,
+          images: images,
           total_floors: formData.total_floors ? Number(formData.total_floors) : null,
         })
         .eq("id", listing.id);
@@ -278,6 +290,14 @@ export const EditListingDialog = ({ listing, open, onOpenChange }: EditListingDi
               rows={3}
             />
           </div>
+
+          {listing && (
+            <ImageEditor
+              images={images}
+              onImagesChange={setImages}
+              listingId={listing.id}
+            />
+          )}
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
