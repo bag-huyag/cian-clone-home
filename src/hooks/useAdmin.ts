@@ -202,6 +202,58 @@ export const useAdmin = () => {
     },
   });
 
+  // Bulk update listing status
+  const bulkUpdateListingStatus = useMutation({
+    mutationFn: async ({ ids, status }: { ids: string[]; status: string }) => {
+      const { error } = await supabase
+        .from("listings")
+        .update({ status })
+        .in("id", ids);
+      
+      if (error) throw error;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["adminListings"] });
+      toast({
+        title: "Статусы обновлены",
+        description: `Изменён статус ${variables.ids.length} объявлений`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Bulk delete listings
+  const bulkDeleteListings = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase
+        .from("listings")
+        .delete()
+        .in("id", ids);
+      
+      if (error) throw error;
+    },
+    onSuccess: (_, ids) => {
+      queryClient.invalidateQueries({ queryKey: ["adminListings"] });
+      toast({
+        title: "Объявления удалены",
+        description: `Удалено ${ids.length} объявлений`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Ошибка",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     isAdmin,
     isCheckingAdmin,
@@ -215,5 +267,7 @@ export const useAdmin = () => {
     deleteListing,
     addRole,
     removeRole,
+    bulkUpdateListingStatus,
+    bulkDeleteListings,
   };
 };
