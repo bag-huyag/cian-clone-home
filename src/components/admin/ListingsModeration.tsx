@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Check, X, Trash2, Eye, Search, Pencil, CheckSquare } from "lucide-react";
+import { Check, X, Trash2, Eye, Search, Pencil, CheckSquare, ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { EditListingDialog } from "./EditListingDialog";
@@ -56,6 +56,8 @@ export const ListingsModeration = () => {
   const [editingListing, setEditingListing] = useState<ListingWithUser | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const filteredListings = allListings.filter((listing) => {
     const matchesSearch =
@@ -69,12 +71,34 @@ export const ListingsModeration = () => {
     return matchesSearch && matchesStatus;
   });
 
-  const allSelected = filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id));
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredListings.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedListings = filteredListings.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filter changes
+  const handleFilterChange = (value: string) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    setItemsPerPage(Number(value));
+    setCurrentPage(1);
+  };
+
+  const allSelected = paginatedListings.length > 0 && paginatedListings.every((l) => selectedIds.has(l.id));
   const someSelected = selectedIds.size > 0;
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedIds(new Set(filteredListings.map((l) => l.id)));
+      setSelectedIds(new Set(paginatedListings.map((l) => l.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -144,11 +168,11 @@ export const ListingsModeration = () => {
           <Input
             placeholder="Поиск по городу, району, продавцу..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={handleFilterChange}>
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Статус" />
           </SelectTrigger>
@@ -237,7 +261,7 @@ export const ListingsModeration = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredListings.map((listing) => (
+              paginatedListings.map((listing) => (
                 <TableRow key={listing.id}>
                   <TableCell>
                     <Checkbox
@@ -348,8 +372,49 @@ export const ListingsModeration = () => {
         </Table>
       </div>
 
-      <div className="text-sm text-muted-foreground">
-        Показано {filteredListings.length} из {allListings.length} объявлений
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-sm text-muted-foreground">
+          Показано {startIndex + 1}–{Math.min(endIndex, filteredListings.length)} из {filteredListings.length} объявлений
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">На странице:</span>
+            <Select value={String(itemsPerPage)} onValueChange={handleItemsPerPageChange}>
+              <SelectTrigger className="w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="25">25</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm px-2 min-w-[80px] text-center">
+              {currentPage} из {totalPages || 1}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
 
       <EditListingDialog
